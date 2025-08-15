@@ -12,7 +12,6 @@ export default $config({
   async run() {
     // Create VPC for the database
     const vpc = new sst.aws.Vpc("AppVpc", {
-      nat: "managed",
     });
 
     // Determine database configuration based on stage
@@ -99,7 +98,6 @@ export default $config({
     });
     
     new sst.aws.React("web", {
-      vpc,
       environment: {
         // Aurora Data API configuration (standardized approach)
         DB_DATABASE: stageDatabaseName,
