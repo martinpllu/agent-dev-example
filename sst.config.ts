@@ -3,7 +3,7 @@
 export default $config({
   app(input) {
     return {
-      name: "agent-stack-reference-app",
+      name: "agent-dev-example",
       removal: input?.stage === "production" ? "retain" : "remove",
       protect: ["production"].includes(input?.stage),
       home: "aws",

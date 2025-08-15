@@ -1,6 +1,6 @@
 # Team Task Tracker 
 
-A demo application built with the agent-stack patterns, featuring:
+A demo application for experimenting with AI agent development wokflows.
 
 - **Kanban board** with backlog, in-progress, and done columns
 - **Authentication** with OpenAuth
@@ -186,7 +186,3 @@ apps/reference-app/
 ```bash
 npx sst deploy --stage production
 ```
-
-## Contributing
-
-This is a reference implementation demonstrating best practices for building full-stack applications with the agent-stack patterns.

@@ -28,31 +28,6 @@ npm run delete-all-data
 tsx scripts/delete-all-data.ts
 ```
 
-### Example output
-
-```
-🚨 DELETE ALL DATA SCRIPT 🚨
-================================
-This script will delete ALL data from:
-• DynamoDB table: agent-stack-reference-app-dev-AuthStorageTable-xyz123
-• Aurora database: dev (users and tasks tables)
-
-🛑 Are you ABSOLUTELY SURE you want to delete ALL data? (type "yes" to confirm): yes
-
-🚀 Starting data deletion...
-
-🗑️  Deleting data from DynamoDB table: agent-stack-reference-app-dev-AuthStorageTable-xyz123
-📋 Scanning DynamoDB table...
-✅ DynamoDB table is already empty
-
-🗑️  Deleting data from Aurora database: dev
-🔄 Deleting tasks table data...
-🔄 Deleting users table data...
-ℹ️  No sequences to reset (this is normal for UUID primary keys)
-✅ Aurora data deletion completed
-
-🎉 Data deletion process completed!
-```
 
 ### Aurora auto-pause handling
 
