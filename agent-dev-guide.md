@@ -1,6 +1,6 @@
 # Developer Guide
 
-This is Developer Guide designed for AI agents working in this codebase. It contains:
+This is a Developer Guide designed for AI agents working in this codebase. It contains:
 
 - **KEY AGENT RESPONSIBILITIES**: Important rules to follow when developing the application.
 - **ARCHITECTURE**: application overview, components, layers, frameworks and libraries, key standards, code layout. 
@@ -39,37 +39,35 @@ The Developer Guide serves as an interface between the agent and the development
 ## Application Overview
 
 ### Purpose
-A demo application for experimenting with AI agent development workflows, featuring a Kanban board for tracking work items across different stages (backlog, in-progress, done) with role-based access control.
+Team Task Tracker - A demo application for experimenting with AI agent development workflows. Provides a kanban board for teams to manage tasks with role-based access control.
 
 ### Type
-Full-stack web application with SSR/SPA capabilities via React Router v7
+Web application with full-stack React Router v7 SSR
 
 ### Domain
-Demo application for AI agent development experimentation
+Task management, team collaboration, internal tool
 
 ### Key Features
-- Kanban board with task management across backlog, in-progress, and done columns
-- Role-based access control (Guest, User, Admin)
-- Passwordless email-based authentication with verification codes
-- Task creation, editing, and status management
+- Kanban board with backlog, in-progress, and done columns
+- Authentication with custom email code flow
+- Role-based access control (user, admin)
+- Real-time task management
 - Admin user management panel
-- Comprehensive E2E and unit testing infrastructure
-- Interactive debugging tools
-- See `README.md` for complete setup and usage
+- See `README.md` for more
 
 ## Architecture Shape
 
 ### Pattern
-Modular monolith with clear separation of concerns
+Modular monolith with SSR frontend and Aurora Data API backend
 
 ### Deployment
-Serverless on AWS using SST v3, Aurora Serverless v2 PostgreSQL with auto-pause
+Serverless on AWS using SST v3, auto-scaling Aurora Serverless v2
 
 ### Communication
-Server-side rendering with React Router v7 loaders/actions, REST-style interactions
+HTTP/HTTPS with React Router loaders/actions, Aurora Data API for database
 
 ### Scalability
-Serverless auto-scaling with Aurora Serverless v2 that scales to zero (0 ACU) when inactive (10 min dev, 60 min prod)
+Stateless application tier, auto-scaling database (0-16 ACU production, 0-4 ACU dev)
 
 ## Tech Stack
 
@@ -77,23 +75,18 @@ Serverless auto-scaling with Aurora Serverless v2 that scales to zero (0 ACU) wh
 TypeScript
 
 ### Runtime/Platform
-Node.js 18+, AWS Lambda for serverless functions, Vite for development
+Node.js 18+, AWS Lambda
 
 ### Package Manager
 pnpm
 
 ### Key Dependencies
-- React 19
 - React Router v7
-- SST v3
 - Drizzle ORM
+- SST v3
 - OpenAuth
-- Hono (for auth Lambda)
-- shadcn/ui components with Radix UI
-- Tailwind CSS v4
-- Playwright for E2E testing
-- Vitest for unit testing
-- Zod for validation
+- shadcn/ui
+- Tailwind CSS
 
 ## Frontend
 
@@ -101,36 +94,36 @@ pnpm
 React Router v7
 
 ### Rendering
-SSR/SPA hybrid (React Router v7 with Vite)
+SSR (Server-Side Rendering) by default
 
 ### Routing
-File-based routing with React Router v7
+File-based routing with `app/routes.ts` configuration
 
 ### Styling
-Tailwind CSS v4 with shadcn/ui component library and Radix UI primitives
+Tailwind CSS with shadcn/ui components
 
 ### State Management
-React Router loaders/actions for server state, React hooks for local state
+React Router loaders/actions with server state
 
 ### Build Tool
-Vite with React Router
+Vite
 
 ### UI Components
-shadcn/ui design system with Radix UI primitives
+shadcn/ui component library - see `app/components/ui/`
 
 ### API Communication
-React Router actions and loaders for data fetching
+React Router loaders/actions pattern
 
 ## Backend
 
 ### Framework
-React Router v7 with server-side capabilities, Hono for auth Lambda
+React Router v7 loaders/actions with Hono for auth endpoints
 
 ### API Style
-React Router actions/loaders pattern, REST-style endpoints
+Form actions and data loaders pattern
 
 ### Middleware
-Custom auth middleware in app/auth/auth-middleware.ts
+Custom auth middleware - see `app/auth/auth-middleware.ts`
 
 ### Background Jobs
 [Not implemented yet]
@@ -141,33 +134,33 @@ Custom auth middleware in app/auth/auth-middleware.ts
 ## Authentication & Authorization
 
 ### Authentication Method
-Passwordless email-based verification codes (6-digit, 10-minute expiry)
+Custom email verification code flow with OpenAuth
 
 ### Auth Provider
-OpenAuth with custom Lambda implementation
+Self-managed with OpenAuth library
 
 ### Session Management
-Base64 encoded JSON tokens (not JWT) with 24-hour expiry, stored in HttpOnly cookies
+Base64 encoded tokens stored in cookies, 24-hour expiry
 
 ### Multi-Factor Auth
 [Not implemented yet]
 
 ### Password Policy
-Passwordless authentication via 6-digit email verification codes
+[Not applicable - passwordless email code authentication]
 
 ### Authorization Model
-Role-based access control (RBAC)
+RBAC with isAdmin and isValidated flags
 
 ### Roles & Permissions
-- Guest: Read-only access to tasks
-- User: Create/edit own tasks, update task status
-- Admin: Full task management, user management, delete any task
+- Guest: View tasks (read-only)
+- User: Create, edit own tasks, update status
+- Admin: Full task management, user management
 
 ### API Security
-Token-based authentication with validation middleware
+Token-based authentication in cookies
 
 ### Token Management
-24-hour access tokens (Base64 JSON), no refresh token strategy, automatic cleanup on expiry
+24-hour access tokens, stored in httpOnly cookies
 
 ### SSO Integration
 [Not implemented yet]
@@ -175,33 +168,33 @@ Token-based authentication with validation middleware
 ## Data Layer
 
 ### Primary Database
-Aurora Serverless v2 PostgreSQL with Data API
+Aurora Serverless v2 PostgreSQL 16.4
 
 ### ORM/ODM
-Drizzle ORM
+Drizzle ORM with Aurora Data API driver
 
 ### Migrations
-Drizzle Kit for migrations (drizzle/ directory)
+Drizzle Kit - see `drizzle/` directory
 
 ### Caching
 [Not implemented yet]
 
 ### Search
-Database queries only
+Database queries via Drizzle ORM
 
 ### Data Validation
-Zod for schema validation
+Zod and Valibot for schema validation
 
 ## Infrastructure & Deployment
 
 ### Hosting
-AWS (eu-west-1 region) via SST v3
+AWS via SST v3
 
 ### Containerization
 [Not applicable - serverless app]
 
-### IaC
-SST v3 (Infrastructure as Code) with Pulumi backend
+### Infrastructure as Code
+SST v3. Note that there are significant differences between SSTv2 and v3. Please consult online docs at https://sst.dev/docs if you're not sure.
 
 ### CI/CD
 [Not implemented yet]
@@ -210,125 +203,145 @@ SST v3 (Infrastructure as Code) with Pulumi backend
 [Not implemented yet]
 
 ### Logging
-Console logging to .sst/log/ in development, CloudWatch in production
+Console logging, SST dev logs in `.sst/log/`
 
 ### Secrets Management
-AWS Secrets Manager for Aurora database credentials (auto-generated)
+AWS Secrets Manager for database credentials
 
 ## Development Patterns
 
 ### Code Style
-ESLint with TypeScript ESLint plugin, Remix ESLint config
+ESLint configuration - see `.eslintrc`
 
 ### Git Workflow
-Feature branches with PR reviews
+Main branch development
 
 ### Testing Strategy
-Unit tests with Vitest (jsdom), E2E tests with Playwright (single worker), Page Object Model pattern, sequential execution to avoid auth conflicts
+Unit tests with Vitest, E2E tests with Playwright - see `docs/test-overview.md`
 
 ### Error Handling
-Centralized error handler in app/utils/error-handler.ts
+Centralized error handler - see `app/utils/error-handler.ts`
 
 ### Security Patterns
-Input validation with Zod, parameterized queries via Drizzle ORM, HttpOnly cookies, SameSite protection
+Input validation with Zod, parameterized queries via Drizzle ORM
 
 ### Documentation
-TypeScript types, comprehensive test documentation in docs/, inline JSDoc comments
+Inline JSDoc comments, comprehensive docs in `docs/` directory
 
 ### Configuration
-Environment-based via SST stages, stage isolation with separate databases
+Environment-based via SST, database config in `app/db/client.ts`
 
 ## Codebase Structure
 
 ```
-app/                        # React Router application
-├── auth/                   # Authentication middleware and server
-├── components/            # UI components
-│   ├── ui/               # shadcn/ui base components
-│   └── tasks/            # Task-specific components
-├── db/                    # Database layer
-│   ├── client.ts         # RDS Data API client
-│   ├── repositories/     # Data access layer
-│   └── schema.ts         # Drizzle schema definitions
-├── model/                 # Domain models
-├── routes/                # Page routes (file-based routing)
-├── types/                 # TypeScript type definitions
-├── utils/                 # Utility functions
-├── root.tsx              # Root layout component
-└── routes.ts             # Route configuration
-
-auth/                      # Auth Lambda function
-├── index.ts              # Lambda handler with Hono
-├── file-storage.ts       # Dev mode storage
-└── subjects.ts           # Auth subject types
-
-scripts/                   # Development utilities
-├── db.ts                 # Database CLI wrapper
-├── sql-query.ts          # Direct SQL execution
-├── migrate.ts            # Migration runner
-├── create-user.ts        # User creation utility
-├── debug-browser.ts      # Interactive Playwright debugger
-└── get-dev-server-url.ts # Port detection utility
-
-tests/                     # Test files
-├── pages/                # Page Object Models
-├── *.e2e.test.ts        # E2E test files
-└── test-utils.ts        # Test utilities
-
-drizzle/                  # Database migrations
-├── *.sql                # Migration files
-└── meta/                # Migration metadata
-
-docs/                     # Documentation
-├── test-*.md            # Testing documentation
-└── typescript-guidelines.md
-
-Configuration Files:
-- sst.config.ts          # SST infrastructure config
-- drizzle.config.ts      # Drizzle ORM config
-- playwright.config.ts   # E2E test config
-- vitest.config.ts       # Unit test config
-- tailwind.config.ts     # Tailwind CSS config
-- react-router.config.ts # React Router config
-- vite.config.ts         # Vite bundler config
+/Users/martin/dev/agent-dev-example/
+├── app/                    # React Router frontend application
+│   ├── routes/            # File-based routing pages
+│   │   ├── home.tsx      # Landing page
+│   │   ├── tasks.tsx     # Main task board
+│   │   ├── user.tsx      # User profile
+│   │   ├── auth.*.tsx    # Authentication flows
+│   │   └── admin.*.tsx   # Admin pages
+│   ├── components/        # UI components
+│   │   ├── ui/           # shadcn/ui base components  
+│   │   ├── tasks/        # Task-specific components
+│   │   └── layout.tsx    # Main layout wrapper
+│   ├── auth/             # Authentication logic
+│   │   ├── auth-middleware.ts  # Role-based middleware
+│   │   ├── auth-server.ts      # Auth utilities
+│   │   └── auth-actions.ts     # Auth form actions
+│   ├── db/               # Database layer
+│   │   ├── schema.ts     # Drizzle schema definitions
+│   │   ├── client.ts     # Aurora Data API client
+│   │   └── repositories/ # Data access patterns
+│   ├── model/            # Business logic models
+│   ├── types/            # TypeScript type definitions
+│   └── utils/            # Utility functions
+├── auth/                  # Auth backend function
+│   ├── index.ts          # Hono auth endpoints
+│   ├── subjects.ts       # OpenAuth subjects
+│   └── file-storage.ts   # Dev mode storage
+├── scripts/              # Database and dev utilities
+│   ├── create-user.ts    # User creation script
+│   ├── migrate.ts        # Migration runner
+│   ├── sql-query.ts      # Direct SQL execution
+│   └── debug-browser.ts  # Interactive debugging
+├── tests/                # Test suites
+│   ├── pages/           # Page Object Models
+│   ├── *.e2e.test.ts    # E2E test files
+│   └── *-utils.ts       # Test utilities
+├── drizzle/              # Database migrations
+├── docs/                 # Documentation
+├── sst.config.ts         # SST infrastructure config
+├── package.json          # Dependencies and scripts
+├── drizzle.config.ts     # Drizzle ORM config
+├── playwright.config.ts  # E2E test config
+└── vitest.config.ts      # Unit test config
 ```
+
+**Entry Points**: 
+- `app/root.tsx` - Main React application root
+- `auth/index.ts` - Auth function handler
+- `sst.config.ts` - Infrastructure entry point
+
+**Configuration Files**:
+- `sst.config.ts` - SST infrastructure as code
+- `drizzle.config.ts` - Database ORM configuration  
+- `react-router.config.ts` - React Router settings
+- `tailwind.config.ts` - Styling configuration
+- `playwright.config.ts` - E2E test configuration
+- `vitest.config.ts` - Unit test configuration
+
+**Generated Files**: 
+- `.sst/` - SST build artifacts (gitignored)
+- `build/` - React Router build output (gitignored)
+- `node_modules/` - Dependencies (gitignored)
+- `.sst/outputs.json` - Infrastructure outputs
+
+**Scripts**: See `scripts/README.md` for utilities
+
+**Documentation**: See `docs/` for detailed guides
 
 # DEVELOPMENT CAPABILITIES
 
 ## Setup & Initialization
+
+### Using the Personal Development Environment
+
+- As the application is started with `npx sst dev` it's assumed that the default stage is appropriate - this will either be the username on the local machine, the stage in .sst/stage or the stage in the SST_STAGE env variable. See https://sst.dev/docs/reference/cli/#stage
 
 ### Install dependencies
 `pnpm install`
 
 ### Start application
 `npx sst dev`
-- Runs with hot reload/watch mode for both frontend and backend
-- Infrastructure changes are automatically deployed
-- Web server logs are captured to `.sst/log/web.log`
+
+- In sst dev, all changes to backend/frontend code and infrastructure (in sst.config.ts) will be automatically reloaded. 
+- Code reloading takes a few seconds. 
+- Infrastructure changes can take longer so you might want to watch the logs.
 
 ### Stop application
-`Ctrl+C` in the terminal running `npx sst dev`
+Press Ctrl+C in the terminal running `npx sst dev`
 
 ### Application status
-Run `find .sst -name "*.server" -type f` to check if a .server file exists in `.sst/`. If it exists, the app is running locally.
+Run `find .sst -name "*.server" -type f` to check if a .server file exist in `.sst/`. If it exists, the app is running locally. If not, the app is not running.
 
 ### Application deployment info
-- Backend endpoints: Check `.sst/outputs.json`
-- Web app URL: Check `.sst/log/web.log` for the local server URL
+- `.sst/outputs.json` contains infrastructure outputs, e.g. backend endpoints.
 
 ### Environment setup
-All configuration is managed through SST. Database credentials are automatically configured.
+Environment variables are managed by SST and injected at runtime. See `sst.config.ts` for configuration.
 
 ### One-command setup
 ```bash
-pnpm install && npx sst deploy --stage dev && pnpm migrate --stage dev && pnpm create-user --stage dev --email admin@test.com --admin
+pnpm install && npx sst deploy --stage dev && pnpm migrate --stage dev && pnpm create-user --stage dev --email test@example.com --admin
 ```
 
 ### Environment validation
-SST will validate all required AWS configurations on startup
+Check `.sst/outputs.json` exists and contains database configuration
 
 ### Quick reset
-`pnpm delete-all-data --stage <stage-name>` to clear all data
+`pnpm delete-all-data --stage dev && pnpm migrate --stage dev`
 
 ## Build & Development
 
@@ -336,19 +349,19 @@ SST will validate all required AWS configurations on startup
 `pnpm build`
 
 ### Clean build
-`rm -rf build .sst dist`
+`rm -rf build .sst && pnpm build`
 
 ### Build for different environments
-Deploy to different stages: `npx sst deploy --stage <stage-name>`
+Handled via SST stages: `npx sst deploy --stage production`
 
 ### Watch mode
-Automatic via `npx sst dev` (includes hot reload)
+Automatic with `npx sst dev` - hot reload enabled
 
 ### Bundle analysis
-[Not implemented yet]
+[Not implemented yet - could use vite-bundle-visualizer]
 
 ### Source maps
-Generated automatically in development
+Generated automatically in development mode
 
 ## Code Quality & Validation
 
@@ -359,16 +372,16 @@ Generated automatically in development
 `pnpm typecheck`
 
 ### Format code
-[Not implemented yet]
+[Not implemented yet - could add prettier]
 
 ### Fix linting issues
 `pnpm lint:fix`
 
 ### Pre-commit validation
-[Not implemented yet]
+[Not implemented yet - could add husky]
 
 ### Security scan
-[Not implemented yet]
+[Not implemented yet - could add npm audit]
 
 ### Check code style
 `pnpm lint`
@@ -394,7 +407,7 @@ Generated automatically in development
 `pnpm test --coverage`
 
 ### Run integration tests
-[Not implemented yet]
+[Not applicable - backend/frontend integrated]
 
 ### Run E2E tests
 `pnpm test:e2e`
@@ -406,106 +419,94 @@ Generated automatically in development
 [Not implemented yet]
 
 ### Create test user
-```bash
-# Create test admin user
-pnpm create-user --stage <stage-name> --email test@example.com --admin
-
-# Create test regular user
-pnpm create-user --stage <stage-name> --email user@example.com
-```
+`pnpm create-user --stage dev --email test@example.com --admin`
 
 ### Log in test user
-In development mode, verification codes are logged to the console:
-1. Start the app with `npx sst dev`
-2. Navigate to login page and enter email
-3. Check SST logs > AuthFunction for: `Login code for test@example.com: XXXXXX`
-4. Enter the 6-digit code to complete login
+Use email code flow - code appears in SST console logs during development
 
 ## Database Operations
 
 ### Run migrations
-`pnpm migrate --stage <stage-name>`
+`pnpm migrate --stage dev`
 
 ### Connect to database
-`pnpm db studio --stage <stage-name>` opens Drizzle Studio browser
+`pnpm db studio --stage dev` opens Drizzle Studio
 
 ### Reset database
-`pnpm delete-all-data --stage <stage-name>`
+`pnpm delete-all-data --stage dev && pnpm migrate --stage dev`
 
 ### Seed database
-Create users with `pnpm create-user --stage <stage-name> --email user@test.com [--admin]`
+Use `pnpm create-user` to create test users
 
 ### Run arbitrary query
-`pnpm sql "SELECT * FROM users;" --stage <stage-name>`
+`pnpm sql "SELECT * FROM users;" --stage dev`
 
 ### View schema
-`pnpm db studio --stage <stage-name>` or check `app/db/schema.ts`
+See `app/db/schema.ts` or use Drizzle Studio
 
 ### Rollback migration
-[Not implemented yet]
+[Not implemented yet - manually edit migration files]
 
 ### Backup database
-[Not implemented yet]
+[Not implemented yet - use AWS RDS snapshots]
 
 ### Restore database
-[Not implemented yet]
+[Not implemented yet - use AWS RDS snapshots]
 
 ### Query performance analysis
-Use AWS RDS console for query insights
+Use Aurora Data API insights in AWS console
 
 ## Debugging & Inspection
 
 ### View logs
-- SST/infrastructure logs: `.sst/log/pulumi.log`
-- Lambda logs: `.sst/lambda/<FunctionName>/<id>.log`
-- Web app logs: `.sst/log/web.log`
-- Auth function logs: Check SST console Functions tab
+Logs are written to `.sst/log`. The exact logs will depend on the type of application and infrastructure used, but they may include:
+
+- `.sst/log/pulumi.log` - infrastructure logs
+- `.sst/lambda/<MyFunction>/<id>.log` - lambda invocation logs
+- `.sst/log/web.log` - web app logs (e.g. nextjs or React Router app). You can get the URL of the web app in this log.
+    - If you are trying to read web.log but it doesn't exist, prompt the user as follows:
+    - "No web log found at .sst/log/web.log. Ensure that the `dev` command in `package.json` ends with ` > .sst/log/web.log 2>&1`. This captures the output of the local web server (e.g. vite) to a log file that the agent can read. This will be addressed in https://github.com/sst/sst/pull/5898."
 
 ### Tail logs
-`tail -f .sst/log/web.log` or use SST console
+`tail -f .sst/log/web.log`
 
 ### Interactively use the app
-`pnpm tsx scripts/debug-browser.ts` - Interactive Playwright REPL with helper functions:
-- `debug.goto(url)` - Navigate to URL
-- `debug.loginAsAdmin()` - Login as admin
-- `debug.inspect()` - Inspect page state
-- `debug.screenshot()` - Take screenshot
-- Full Playwright API available via `debug.page`
+`pnpm tsx scripts/debug-browser.ts` - launches interactive Playwright REPL
 
 ### Search logs
 `grep "pattern" .sst/log/*.log`
 
 ### Filter logs by level
-Use grep: `grep -E "ERROR|WARN" .sst/log/*.log`
+`grep -E "ERROR|WARN" .sst/log/web.log`
 
 ### Connect debugger
-Use VS Code debugger with Node.js configuration
+Use VSCode debugger with Node.js attach configuration
 
 ### Inspect running process
-[Not implemented yet]
+`ps aux | grep sst` to find processes
 
 ### Profile performance
-[Not implemented yet]
+[Not implemented yet - could add performance monitoring]
 
 ### Trace requests
-Check Lambda invocation logs in `.sst/lambda/`
+Check `.sst/log/web.log` for request logs
 
 ## Monitoring
 
 ### Health check
-Check application status as described above
+Check application URL returns 200 status
 
 ### View metrics
-[Not implemented yet]
+[Not implemented yet - could add CloudWatch metrics]
 
 ### Check service status
-SST console shows Lambda function status
+`find .sst -name "*.server" -type f` to verify SST is running
 
 ### Monitor dashboard
-[Not implemented yet]
+[Not implemented yet - could add CloudWatch dashboard]
 
 ### View error rates
-[Not implemented yet]
+`grep ERROR .sst/log/*.log | wc -l`
 
 ## Deployment & Release
 
@@ -513,16 +514,16 @@ SST console shows Lambda function status
 `npx sst deploy --stage production`
 
 ### Run production mode locally
-[Not implemented yet]
+[Not applicable - use SST stages]
 
 ### View deployment status
-SST console shows deployment progress
+Check AWS CloudFormation console or SST dashboard
 
 ### Rollback deployment
-[Not implemented yet]
+[Not implemented yet - use AWS CloudFormation rollback]
 
 ### Run smoke tests
-`pnpm test:quick` for basic test suite
+`pnpm test:quick` after deployment
 
 ### Generate release notes
 [Not implemented yet]
@@ -533,25 +534,25 @@ SST console shows deployment progress
 See `README.md`
 
 ### Available commands
-Run `pnpm run` to see all available scripts
+`pnpm run` to list all scripts
 
 ### Environment variables
-Managed via SST, see `sst.config.ts`
+Managed via SST - see `sst.config.ts`
 
 ### API documentation
-[Not implemented yet]
+[Not implemented yet - routes documented inline]
 
 ### Generate documentation
 [Not implemented yet]
 
 ### View documentation locally
-[Not implemented yet]
+Open `docs/` directory files
 
 ### Architecture overview
-See this document and `README.md`
+See Architecture section above and `README.md`
 
 ### Troubleshooting guide
-[Not implemented yet]
+See `docs/test-dynamic-port-detection.md` for port issues
 
 ## Utilities
 
@@ -571,10 +572,10 @@ See this document and `README.md`
 `pnpm store prune`
 
 ### Generate component/module
-[Not implemented yet]
+[Not implemented yet - could add plop]
 
 ### Find unused dependencies
-[Not implemented yet]
+[Not implemented yet - could add depcheck]
 
 ### Validate dependencies
 `pnpm install --frozen-lockfile`
@@ -582,22 +583,22 @@ See this document and `README.md`
 ## API/Service Specific
 
 ### List endpoints
-Check `app/routes.ts` for route definitions
+See `app/routes.ts` for all routes
 
 ### Test endpoint
 Use `scripts/debug-browser.ts` or curl
 
 ### View API documentation
-[Not implemented yet]
+[Not implemented yet - routes self-documenting]
 
 ### Mock external services
-[Not implemented yet]
+[Not applicable - no external service dependencies]
 
 ### Validate request/response
-TypeScript types in `app/types/`
+TypeScript types in `app/types/` and `app/model/`
 
 ### Load test endpoint
-[Not implemented yet]
+[Not implemented yet - could add k6 or artillery]
 
 ## Frontend Specific
 
@@ -605,67 +606,39 @@ TypeScript types in `app/types/`
 `pnpm build`
 
 ### Bundle size analysis
-[Not implemented yet]
+[Not implemented yet - could add rollup-plugin-visualizer]
 
 ### Component explorer
-[Not implemented yet]
+[Not implemented yet - could add Storybook]
 
 ### Run accessibility audit
-[Not implemented yet]
+[Not implemented yet - could add axe-core]
 
 ### Lighthouse audit
-[Not implemented yet]
+Use Chrome DevTools Lighthouse
 
 ### Browser testing
-E2E tests run in Chromium via Playwright
+Playwright tests cover Chrome - see `playwright.config.ts`
 
 ## Configuration & Environment
 
 ### List configuration
-Check `.sst/outputs.json` after running `npx sst dev`
+See `.sst/outputs.json` for current infrastructure config
 
 ### Switch environment
-Use `--stage` parameter: `npx sst dev --stage <stage-name>`
+Use `--stage` parameter: `npx sst dev --stage staging`
 
 ### Validate configuration
-SST validates on startup
+`npx sst diff --stage dev`
 
 ### Diff configurations
-[Not implemented yet]
+`npx sst diff --stage dev --stage production`
 
 ### Encrypt secrets
 Handled automatically by AWS Secrets Manager
 
 ### Export configuration
-View `.sst/outputs.json`
-
-## Infrastructure as code
-
-SST v3. Note that there are significant differences between SSTv2 and v3. Please consult online docs at https://sst.dev/docs if you're not sure.
-
-### Start application
-
-`npx sst dev`
-
-- In sst dev, all changes to backend/frontend code and infrastructure (in sst.config.ts) will be automatically reloaded. 
-- Code reloading takes a few seconds. 
-- Infrastructure changes can take longer so you might want to watch the logs.
-
-### Application status
-
-Run `find .sst -name "*.server" -type f` to check if a .server file exist in `.sst/`. If it exists, the app is running locally. If not, the app is not running. 
-
-### View logs
-
-Logs are written to `.sst/log`. The exact logs will depend on the type of application and infrastructure used, but they may include:
-
-- `.sst/log/pulumi.log` - infrastructure logs
-- `.sst/lambda/<MyFunction>/<id>.log` - lambda invocation logs
-- `.sst/log/web.log` - web app logs (e.g. nextjs or React Router app). You can get the URL of the web app in this log.
-
-### Application deployment info
-
-- `.sst/outputs.json` contains infrastructure outputs, e.g. backend endpoints.
+`cat .sst/outputs.json`
 
 ---
 Built with https://github.com/martinpllu/agent-dev-guide v1.0.0
